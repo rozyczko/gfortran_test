@@ -28,7 +28,7 @@ jobs:
 
       - name: compile test
         run: |
-          gfortran -o test test_b.f90
+          gfortran -o -Og test test_b.f90
 
       - name: Run tests
         run: ./test
