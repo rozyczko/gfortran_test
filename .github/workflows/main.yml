@@ -1,0 +1,35 @@
+name: main
+
+on:
+  push:
+
+jobs:
+  main:
+    timeout-minutes: 30
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [flyci-macos-14-m2, flyci-macos-14-m1]  # [flyci-macos-14-m1, flyci-macos-14-m2, ubuntu-22.04, macos-12, windows-2022]
+        build_system: [cmake]  # [cmake, fpm]
+        compiler: [gfortran]
+
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+
+      - name: Install OS-specific dependences (macOS + gfortran)
+        # if: runner.os == 'macOS' && matrix.compiler == 'gfortran'
+        run: |
+          brew reinstall gcc  # to add gfortran
+          gfortran --version
+
+      - name: compile test
+        run: |
+          gfortran -o test test_b.f90
+
+      - name: Run tests
+        run: ./test
+
